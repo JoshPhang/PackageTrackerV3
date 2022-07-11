@@ -3,8 +3,10 @@ package cmpt213.assignment3.packagedeliveriestracker;
 import cmpt213.assignment3.packagedeliveriestracker.model.Package;
 import cmpt213.assignment3.packagedeliveriestracker.textui.PackageFactory;
 import cmpt213.assignment3.packagedeliveriestracker.textui.TextMenu;
+import cmpt213.assignment3.packagedeliveriestracker.view.PackageUI;
 import com.google.gson.*;
 
+import javax.swing.*;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,7 +31,13 @@ public class PackageDeliveriesTracker {
         user.readJSONtoArray();
         final TextMenu my_menu = new TextMenu(user.packageArray);
 
-        my_menu.displayMenu();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new PackageUI("package tracker");
+            }
+        });
+//        my_menu.displayMenu();
     }
 
     /**
