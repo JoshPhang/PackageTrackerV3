@@ -34,7 +34,7 @@ public class PackageDeliveriesTracker {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new PackageUI("package tracker");
+                new PackageUI("My Package Deliveries Tracker", user.packageArray);
             }
         });
 //        my_menu.displayMenu();

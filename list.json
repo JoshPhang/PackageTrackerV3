@@ -1,10 +1,22 @@
-[{
+[
+  {
   "type": "electronic",
   "ehf": 4.0,
   "name": "test",
   "notes": "",
   "price": 4.0,
   "weight": 4.0,
-  "delivered": false,
-  "deliveryDate": "0004-04-04T04:44"
-}]
+  "delivered": true,
+  "deliveryDate": "0001-04-04T04:44"
+},
+  {
+    "type": "electronic",
+    "ehf": 30,
+    "name": "test2",
+    "notes": "",
+    "price": 4.0,
+    "weight": 4.0,
+    "delivered": false,
+    "deliveryDate": "0002-04-04T04:44"
+  }
+]
