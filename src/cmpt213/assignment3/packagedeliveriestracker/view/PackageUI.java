@@ -1,6 +1,8 @@
 package cmpt213.assignment3.packagedeliveriestracker.view;
 
 import cmpt213.assignment3.packagedeliveriestracker.model.Package;
+import com.github.lgooddatepicker.components.DatePicker;
+import com.github.lgooddatepicker.components.DatePickerSettings;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -213,7 +215,14 @@ public class PackageUI {
         weightPanel.add(weightInputField);
         formPanel.add(weightPanel);
 
-        //Add date here
+        JPanel deliveryDatePanel = new JPanel();
+        JLabel deliveryDateLabel = new JLabel("Estimated Delivery Date: ");
+
+        DatePicker deliveryDatePicker = new DatePicker();
+        deliveryDatePicker.setPreferredSize(new Dimension(100,20));
+        deliveryDatePanel.add(deliveryDateLabel);
+        deliveryDatePanel.add(deliveryDatePicker);
+        formPanel.add(deliveryDatePanel);
 
         JPanel specificPanel = new JPanel();
         JLabel specificLabel = new JLabel();
