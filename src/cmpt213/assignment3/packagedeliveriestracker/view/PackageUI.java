@@ -6,6 +6,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,7 +173,7 @@ public class PackageUI {
         titlePanel.add(titleLabel);
 
         JPanel typePanel = new JPanel();
-        String[] types = {"book", "electronic", "perishable"};
+        String[] types = {"--","book", "electronic", "perishable"};
         JComboBox<String> packageTypeOptions = new JComboBox<String>(types);
         JLabel typeLabel = new JLabel("Type: ");
         typePanel.setPreferredSize(new Dimension(100,20));
@@ -205,24 +206,55 @@ public class PackageUI {
         formPanel.add(pricePanel);
 
         JPanel weightPanel = new JPanel();
-        JLabel weightLabel = new JLabel("Price: ");
+        JLabel weightLabel = new JLabel("Weight: ");
         JTextField weightInputField = new JTextField();
         weightInputField.setPreferredSize(new Dimension(100,20));
         weightPanel.add(weightLabel);
         weightPanel.add(weightInputField);
         formPanel.add(weightPanel);
 
+        //Add date here
+
+        JPanel specificPanel = new JPanel();
+        JLabel specificLabel = new JLabel();
+        JTextField specificInputField = new JTextField();
+        specificInputField.setPreferredSize(new Dimension(100,20));
+        specificPanel.add(specificLabel);
         packageTypeOptions.addActionListener(e -> {
             if(packageTypeOptions.getSelectedItem().equals("book")) {
-
+                specificLabel.setText("Author: ");
+                specificPanel.add(specificInputField);
             }
-            System.out.println(packageTypeOptions.getSelectedItem());
+            else if(packageTypeOptions.getSelectedItem().equals("electronic")) {
+                specificLabel.setText("EHF: ");
+                specificPanel.add(specificInputField);
+            }
+            else if(packageTypeOptions.getSelectedItem().equals("perishable")) {
+                specificLabel.setText("Expiry Date: ");
+                specificPanel.add(specificInputField);
+            }
+            else {
+                //Remove text field if it exists
+                if(specificPanel.getComponentCount() == 2) {
+                    specificPanel.remove(1);
+                }
+                specificLabel.setText("*** Please select a package type ***");
+            }
+            formPanel.add(specificPanel);
         });
 
         formPanel.setBorder(BorderFactory.createEmptyBorder(20,0,150,0));
 
+        JPanel buttonPanel = new JPanel();
+        JButton createPackageButton = new JButton("Create");
+        JButton cancelPackageButton = new JButton("Cancel");
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,0,50,0));
+        buttonPanel.add(createPackageButton);
+        buttonPanel.add(cancelPackageButton);
+
         addPackageFrame.add(titlePanel, BorderLayout.NORTH);
         addPackageFrame.add(formPanel, BorderLayout.CENTER);
+        addPackageFrame.add(buttonPanel, BorderLayout.SOUTH);
         addPackageFrame.setVisible(true);
     }
 
