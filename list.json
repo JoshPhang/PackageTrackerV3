@@ -1,5 +1,4 @@
-[
-  {
+[{
   "type": "electronic",
   "ehf": 4.0,
   "name": "test",
@@ -8,15 +7,49 @@
   "weight": 4.0,
   "delivered": true,
   "deliveryDate": "0001-04-04T04:44"
-},
-  {
-    "type": "electronic",
-    "ehf": 30,
-    "name": "test2",
-    "notes": "",
-    "price": 4.0,
-    "weight": 4.0,
-    "delivered": false,
-    "deliveryDate": "0002-04-04T04:44"
-  }
-]
+},{
+  "type": "electronic",
+  "ehf": 30.0,
+  "name": "test2",
+  "notes": "",
+  "price": 4.0,
+  "weight": 4.0,
+  "delivered": false,
+  "deliveryDate": "0002-04-04T04:44"
+},{
+  "type": "electronic",
+  "ehf": 10.0,
+  "name": "test6",
+  "notes": "",
+  "price": 4.0,
+  "weight": 4.0,
+  "delivered": false,
+  "deliveryDate": "2019-04-04T04:44"
+},{
+  "type": "electronic",
+  "ehf": 10.0,
+  "name": "test4",
+  "notes": "",
+  "price": 4.0,
+  "weight": 4.0,
+  "delivered": false,
+  "deliveryDate": "2022-04-04T04:44"
+},{
+  "type": "electronic",
+  "ehf": 10.0,
+  "name": "test5",
+  "notes": "",
+  "price": 4.0,
+  "weight": 4.0,
+  "delivered": false,
+  "deliveryDate": "2023-04-04T04:44"
+},{
+  "type": "electronic",
+  "ehf": 10.0,
+  "name": "test3",
+  "notes": "",
+  "price": 4.0,
+  "weight": 4.0,
+  "delivered": false,
+  "deliveryDate": "2032-04-04T04:44"
+}]
