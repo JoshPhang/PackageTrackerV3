@@ -44,8 +44,7 @@ public class Package {
                 "Notes: " + notes + "\n" +
                 "Price: $" + price + "\n" +
                 "Weight: " + weight + "kg\n" +
-                "Expected Delivery Date: " + deliveryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "\n" +
-                "Delivered? " + deliveredString(delivered));
+                "Expected Delivery Date: " + deliveryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
     }
 
     /**
@@ -78,6 +77,8 @@ public class Package {
     public void markDelivered() {
         delivered = true;
     }
+
+    public void setDelivered(Boolean delivered) { this.delivered = delivered; }
 
     /**
      * Function to return "yes" or "no" depending on true or false

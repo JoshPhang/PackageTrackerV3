@@ -117,14 +117,36 @@ public class PackageUI {
         clearDisplayPane();
         sortPackageList();
         for(int i = 0; i < packageArray.size(); i++) {
+            JPanel packagePanel = new JPanel();
             JTextArea allPackageText = new JTextArea("Package " + (i + 1) + ":\n" + packageArray.get(i).toString());
+            JCheckBox deliveredBox;
+            if(packageArray.get(i).getDelivered()) {
+                deliveredBox = new JCheckBox("Delivered?", true);
+            } else {
+                deliveredBox = new JCheckBox("Delivered?", false);
+            }
+
             allPackageText.setEditable(false);
             allPackageText.setLineWrap(true);
             allPackageText.setSize(250, 10);
             allPackageText.setOpaque(false);
-            allPackageText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+            int finalI = i;
+            deliveredBox.addActionListener(e -> {
+                if(deliveredBox.isSelected()) {
+                    packageArray.get(finalI).setDelivered(true);
+                }
+                else {
+                    packageArray.get(finalI).setDelivered(false);
+                }
+            });
+
+            packagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+            packagePanel.add(allPackageText);
+            packagePanel.add(deliveredBox);
+
             displayPane.add(Box.createVerticalStrut(20));
-            displayPane.add(allPackageText);
+            displayPane.add(packagePanel);
         }
     }
 
@@ -134,15 +156,37 @@ public class PackageUI {
         int counter = 1;
         for(Package i : packageArray) {
             if(!i.getDelivered() && i.getDeliveryDate().isBefore(LocalDateTime.now())) {
+                JPanel packagePanel = new JPanel();
+                JCheckBox deliveredBox;
+                if(i.getDelivered()) {
+                    deliveredBox = new JCheckBox("Delivered?", true);
+                } else {
+                    deliveredBox = new JCheckBox("Delivered?", false);
+                }
+
                 JTextArea allPackageText = new JTextArea("Package " + counter + ":\n" +
                         i);
                 allPackageText.setEditable(false);
                 allPackageText.setLineWrap(true);
                 allPackageText.setSize(250,10);
                 allPackageText.setOpaque(false);
-                allPackageText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+                Package finalPackage = i;
+                deliveredBox.addActionListener(e -> {
+                    if(deliveredBox.isSelected()) {
+                        i.setDelivered(true);
+                    }
+                    else {
+                        i.setDelivered(false);
+                    }
+                });
+
+                packagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+                packagePanel.add(allPackageText);
+                packagePanel.add(deliveredBox);
+
                 displayPane.add(Box.createVerticalStrut(20));
-                displayPane.add(allPackageText);
+                displayPane.add(packagePanel);
                 counter++;
             }
         }
@@ -154,15 +198,37 @@ public class PackageUI {
         int counter = 1;
         for(Package i : packageArray) {
             if(!i.getDelivered() && i.getDeliveryDate().isAfter(LocalDateTime.now())) {
+                JPanel packagePanel = new JPanel();
+                JCheckBox deliveredBox;
+                if(i.getDelivered()) {
+                    deliveredBox = new JCheckBox("Delivered?", true);
+                } else {
+                    deliveredBox = new JCheckBox("Delivered?", false);
+                }
+
                 JTextArea allPackageText = new JTextArea("Package " + counter + ":\n" +
                         i);
                 allPackageText.setEditable(false);
                 allPackageText.setLineWrap(true);
                 allPackageText.setSize(250,10);
                 allPackageText.setOpaque(false);
-                allPackageText.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+
+                Package finalPackage = i;
+                deliveredBox.addActionListener(e -> {
+                    if(deliveredBox.isSelected()) {
+                        i.setDelivered(true);
+                    }
+                    else {
+                        i.setDelivered(false);
+                    }
+                });
+
+                packagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+                packagePanel.add(allPackageText);
+                packagePanel.add(deliveredBox);
+
                 displayPane.add(Box.createVerticalStrut(30));
-                displayPane.add(allPackageText);
+                displayPane.add(packagePanel);
                 counter++;
             }
         }

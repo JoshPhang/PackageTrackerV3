@@ -33,7 +33,6 @@ public class Electronic extends Package {
                 "Price: $" + price + "\n" +
                 "Weight: " + weight + "kg\n" +
                 "Expected Delivery Date: " + deliveryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "\n" +
-                "Delivered? " + deliveredString(delivered) + "\n" +
                 "Environmental Handling Fee: $" + ehf);
     }
 }
