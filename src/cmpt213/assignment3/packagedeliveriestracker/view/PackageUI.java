@@ -1,24 +1,27 @@
 package cmpt213.assignment3.packagedeliveriestracker.view;
 
+import cmpt213.assignment3.packagedeliveriestracker.gson.extras.RuntimeTypeAdapterFactory;
 import cmpt213.assignment3.packagedeliveriestracker.model.Book;
 import cmpt213.assignment3.packagedeliveriestracker.model.Electronic;
 import cmpt213.assignment3.packagedeliveriestracker.model.Package;
 import cmpt213.assignment3.packagedeliveriestracker.model.Perishable;
-import cmpt213.assignment3.packagedeliveriestracker.textui.PackageFactory;
-import com.github.lgooddatepicker.components.DatePicker;
-import com.github.lgooddatepicker.components.DatePickerSettings;
 import com.github.lgooddatepicker.components.DateTimePicker;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
 public class PackageUI {
     String title;
@@ -31,23 +34,61 @@ public class PackageUI {
     JPanel displayPane = new JPanel();
     JScrollPane scrollPane;
     ArrayList<Package> packageArray;
+    private final static String FILE_PATH = "./list.json";
 
     public PackageUI (String title, ArrayList<Package> packageArray) {
         this.packageArray = packageArray;
         this.title = title;
         appFrame = new JFrame(title);
-        appFrame.setSize(500, 600);
-        appFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        appFrame.setSize(600, 600);
+        appFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        appFrame.addWindowListener(new WindowListener() {
+                                       @Override
+                                       public void windowOpened(WindowEvent e) {
+                                           //blank
+                                       }
 
-        displayMainMenu();
+                                       @Override
+                                       public void windowClosing(WindowEvent e) {
+                                           updateFile();
+                                           System.exit(1);
+                                       }
+
+                                       @Override
+                                       public void windowClosed(WindowEvent e) {
+                                           //blank
+                                       }
+
+                                       @Override
+                                       public void windowIconified(WindowEvent e) {
+                                           //blank
+                                       }
+
+                                       @Override
+                                       public void windowDeiconified(WindowEvent e) {
+                                           //blank
+                                       }
+
+                                       @Override
+                                       public void windowActivated(WindowEvent e) {
+                                           //blank
+                                       }
+
+                                       @Override
+                                       public void windowDeactivated(WindowEvent e) {
+                                           //blank
+                                       }
+                                   });
+
+                displayMainMenu();
     }
 
     private void displayMainMenu() {
         selectionPane = new JPanel();
 
         allButton = new JButton("All");
-        allButton.setBackground(Color.DARK_GRAY);
-        allButton.setForeground(Color.WHITE);
+        allButton.setBackground(Color.LIGHT_GRAY);
+        allButton.setForeground(Color.BLACK);
         allButton.addActionListener(e -> {
             allButton.setBackground(Color.DARK_GRAY);
             allButton.setForeground(Color.WHITE);
@@ -114,43 +155,74 @@ public class PackageUI {
     }
 
     private void allPackagesUI() {
+        JTextArea allPackageText;
         clearDisplayPane();
-        sortPackageList();
-        for(int i = 0; i < packageArray.size(); i++) {
-            JPanel packagePanel = new JPanel();
-            JTextArea allPackageText = new JTextArea("Package " + (i + 1) + ":\n" + packageArray.get(i).toString());
-            JCheckBox deliveredBox;
-            if(packageArray.get(i).getDelivered()) {
-                deliveredBox = new JCheckBox("Delivered?", true);
-            } else {
-                deliveredBox = new JCheckBox("Delivered?", false);
-            }
-
+        if(packageArray.isEmpty()) {
+            allPackageText = new JTextArea("No items to show.");
             allPackageText.setEditable(false);
             allPackageText.setLineWrap(true);
             allPackageText.setSize(250, 10);
             allPackageText.setOpaque(false);
 
-            int finalI = i;
-            deliveredBox.addActionListener(e -> {
-                if(deliveredBox.isSelected()) {
-                    packageArray.get(finalI).setDelivered(true);
-                }
-                else {
-                    packageArray.get(finalI).setDelivered(false);
-                }
-            });
+            displayPane.add(allPackageText);
+        }
+        else {
+            sortPackageList();
+            for(int i = 0; i < packageArray.size(); i++) {
+                JPanel packagePanel = new JPanel();
+                allPackageText = new JTextArea("Package " + (i + 1) + ":\n" + packageArray.get(i).toString());
+                allPackageText.setEditable(false);
+                allPackageText.setLineWrap(true);
+                allPackageText.setSize(250, 10);
+                allPackageText.setOpaque(false);
+                JCheckBox deliveredBox;
+                JButton removeButton = new JButton("Remove");
 
-            packagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
-            packagePanel.add(allPackageText);
-            packagePanel.add(deliveredBox);
+                if(packageArray.get(i).getDelivered()) {
+                    deliveredBox = new JCheckBox("Delivered?", true);
+                } else {
+                    deliveredBox = new JCheckBox("Delivered?", false);
+                }
 
-            displayPane.add(Box.createVerticalStrut(20));
-            displayPane.add(packagePanel);
+
+                int finalI = i;
+                deliveredBox.addActionListener(e -> {
+                    if(deliveredBox.isSelected()) {
+                        packageArray.get(finalI).setDelivered(true);
+                    }
+                    else {
+                        packageArray.get(finalI).setDelivered(false);
+                    }
+                });
+
+                removeButton.addActionListener(e -> {
+                    System.out.println(finalI);
+                    packageArray.remove(finalI);
+                    displayPane.remove(packagePanel);
+                    displayPane.updateUI();
+                    if(displayPane.getComponentCount() == 0 || displayPane.getComponentCount() == 1) {
+                        JTextArea missingText = new JTextArea("No items to show.");
+                        missingText.setEditable(false);
+                        missingText.setLineWrap(true);
+                        missingText.setSize(250,10);
+                        missingText.setOpaque(false);
+                        displayPane.add(missingText);
+                    }
+                });
+
+                packagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
+                packagePanel.add(allPackageText);
+                packagePanel.add(deliveredBox);
+                packagePanel.add(removeButton);
+
+                displayPane.add(Box.createVerticalStrut(20));
+                displayPane.add(packagePanel);
+            }
         }
     }
 
     private void overduePackagesUI() {
+        JTextArea allPackageText;
         clearDisplayPane();
         sortPackageList();
         int counter = 1;
@@ -158,13 +230,15 @@ public class PackageUI {
             if(!i.getDelivered() && i.getDeliveryDate().isBefore(LocalDateTime.now())) {
                 JPanel packagePanel = new JPanel();
                 JCheckBox deliveredBox;
+                JButton removeButton = new JButton("Remove");
+
                 if(i.getDelivered()) {
                     deliveredBox = new JCheckBox("Delivered?", true);
                 } else {
                     deliveredBox = new JCheckBox("Delivered?", false);
                 }
 
-                JTextArea allPackageText = new JTextArea("Package " + counter + ":\n" +
+                allPackageText = new JTextArea("Package " + counter + ":\n" +
                         i);
                 allPackageText.setEditable(false);
                 allPackageText.setLineWrap(true);
@@ -174,25 +248,49 @@ public class PackageUI {
                 Package finalPackage = i;
                 deliveredBox.addActionListener(e -> {
                     if(deliveredBox.isSelected()) {
-                        i.setDelivered(true);
+                        finalPackage.setDelivered(true);
                     }
                     else {
-                        i.setDelivered(false);
+                        finalPackage.setDelivered(false);
+                    }
+                });
+
+                removeButton.addActionListener(e -> {
+                    packageArray.remove(finalPackage);
+                    displayPane.remove(packagePanel);
+                    displayPane.updateUI();
+                    if(displayPane.getComponentCount() == 0 || displayPane.getComponentCount() == 1) {
+                        JTextArea missingText = new JTextArea("No items to show.");
+                        missingText.setEditable(false);
+                        missingText.setLineWrap(true);
+                        missingText.setSize(250,10);
+                        missingText.setOpaque(false);
+                        displayPane.add(missingText);
                     }
                 });
 
                 packagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
                 packagePanel.add(allPackageText);
                 packagePanel.add(deliveredBox);
+                packagePanel.add(removeButton);
 
                 displayPane.add(Box.createVerticalStrut(20));
                 displayPane.add(packagePanel);
                 counter++;
             }
         }
+        if(displayPane.getComponentCount() == 0) {
+            allPackageText = new JTextArea("No items to show.");
+            allPackageText.setEditable(false);
+            allPackageText.setLineWrap(true);
+            allPackageText.setSize(250,10);
+            allPackageText.setOpaque(false);
+            displayPane.add(allPackageText);
+        }
     }
 
     private void upcomingPackagesUI() {
+        JTextArea allPackageText;
         clearDisplayPane();
         sortPackageList();
         int counter = 1;
@@ -200,13 +298,15 @@ public class PackageUI {
             if(!i.getDelivered() && i.getDeliveryDate().isAfter(LocalDateTime.now())) {
                 JPanel packagePanel = new JPanel();
                 JCheckBox deliveredBox;
+                JButton removeButton = new JButton("Remove");
+
                 if(i.getDelivered()) {
                     deliveredBox = new JCheckBox("Delivered?", true);
                 } else {
                     deliveredBox = new JCheckBox("Delivered?", false);
                 }
 
-                JTextArea allPackageText = new JTextArea("Package " + counter + ":\n" +
+                allPackageText = new JTextArea("Package " + counter + ":\n" +
                         i);
                 allPackageText.setEditable(false);
                 allPackageText.setLineWrap(true);
@@ -216,21 +316,44 @@ public class PackageUI {
                 Package finalPackage = i;
                 deliveredBox.addActionListener(e -> {
                     if(deliveredBox.isSelected()) {
-                        i.setDelivered(true);
+                        finalPackage.setDelivered(true);
                     }
                     else {
-                        i.setDelivered(false);
+                        finalPackage.setDelivered(false);
+                    }
+                });
+
+                removeButton.addActionListener(e -> {
+                    packageArray.remove(finalPackage);
+                    displayPane.remove(packagePanel);
+                    displayPane.updateUI();
+                    if(displayPane.getComponentCount() == 0 || displayPane.getComponentCount() == 1) {
+                        JTextArea missingText = new JTextArea("No items to show.");
+                        missingText.setEditable(false);
+                        missingText.setLineWrap(true);
+                        missingText.setSize(250,10);
+                        missingText.setOpaque(false);
+                        displayPane.add(missingText);
                     }
                 });
 
                 packagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2, true));
                 packagePanel.add(allPackageText);
                 packagePanel.add(deliveredBox);
+                packagePanel.add(removeButton);
 
                 displayPane.add(Box.createVerticalStrut(30));
                 displayPane.add(packagePanel);
                 counter++;
             }
+        }
+        if(displayPane.getComponentCount() == 0) {
+            allPackageText = new JTextArea("No items to show.");
+            allPackageText.setEditable(false);
+            allPackageText.setLineWrap(true);
+            allPackageText.setSize(250,10);
+            allPackageText.setOpaque(false);
+            displayPane.add(allPackageText);
         }
     }
 
@@ -452,6 +575,50 @@ public class PackageUI {
                     Collections.swap(packageArray,j,j+1);
                 }
             }
+        }
+    }
+
+    /**
+     * Function that utilizes gson to update list.json when program ends
+     * GsonBuilder code taken from Assignment1_Description.pdf
+     * If list.json doesn't exist upon exiting the program, it will create it.
+     */
+    private void updateFile() {
+        RuntimeTypeAdapterFactory<Package> packageAdapterFactory = RuntimeTypeAdapterFactory.of(Package.class)
+                .registerSubtype(Book.class, "book")
+                .registerSubtype(Perishable.class, "perishable")
+                .registerSubtype(Electronic.class, "electronic");
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class,
+                        new TypeAdapter<LocalDateTime>() {
+                            @Override
+                            public void write(JsonWriter jsonWriter,
+                                              LocalDateTime localDateTime) throws IOException {
+                                jsonWriter.value(localDateTime.toString());
+                            }
+                            @Override
+                            public LocalDateTime read(JsonReader jsonReader) throws IOException {
+                                return LocalDateTime.parse(jsonReader.nextString());
+                            }
+                        })
+                .registerTypeAdapterFactory(packageAdapterFactory)
+                .setPrettyPrinting()
+                .create();
+
+        try {
+            FileWriter file = new FileWriter(FILE_PATH);
+            file.append("[");
+            for(int index = 0; index < packageArray.size(); index++) {
+                file.append(gson.toJson(packageArray.get(index), Package.class));
+                if (index + 1 != packageArray.size()) {
+                    file.append(",");
+                }
+            }
+            file.append("]");
+            file.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

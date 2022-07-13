@@ -8,48 +8,21 @@
   "delivered": true,
   "deliveryDate": "0001-04-04T04:44"
 },{
-  "type": "electronic",
-  "ehf": 30.0,
-  "name": "test2",
+  "type": "book",
+  "author": "test",
+  "name": "upcomingBOOK",
   "notes": "",
-  "price": 4.0,
+  "price": 39.0,
   "weight": 4.0,
   "delivered": false,
-  "deliveryDate": "0002-04-04T04:44"
+  "deliveryDate": "2022-07-22T04:30"
 },{
-  "type": "electronic",
-  "ehf": 10.0,
-  "name": "test6",
+  "type": "perishable",
+  "expiryDate": "2022-07-30T03:00",
+  "name": "myperishable",
   "notes": "",
-  "price": 4.0,
+  "price": 3.0,
   "weight": 4.0,
   "delivered": false,
-  "deliveryDate": "2019-04-04T04:44"
-},{
-  "type": "electronic",
-  "ehf": 10.0,
-  "name": "test4",
-  "notes": "",
-  "price": 4.0,
-  "weight": 4.0,
-  "delivered": false,
-  "deliveryDate": "2022-04-04T04:44"
-},{
-  "type": "electronic",
-  "ehf": 10.0,
-  "name": "test5",
-  "notes": "",
-  "price": 4.0,
-  "weight": 4.0,
-  "delivered": false,
-  "deliveryDate": "2023-04-04T04:44"
-},{
-  "type": "electronic",
-  "ehf": 10.0,
-  "name": "test3",
-  "notes": "",
-  "price": 4.0,
-  "weight": 4.0,
-  "delivered": false,
-  "deliveryDate": "2032-04-04T04:44"
+  "deliveryDate": "2022-07-31T03:30"
 }]
