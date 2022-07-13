@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class PackageFactory {
+
     /**
      * Factory function that takes user input and creates a package object depending on the type
      * @param type the type of the package

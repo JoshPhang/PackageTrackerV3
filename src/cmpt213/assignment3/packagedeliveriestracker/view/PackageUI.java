@@ -1,17 +1,24 @@
 package cmpt213.assignment3.packagedeliveriestracker.view;
 
+import cmpt213.assignment3.packagedeliveriestracker.model.Book;
+import cmpt213.assignment3.packagedeliveriestracker.model.Electronic;
 import cmpt213.assignment3.packagedeliveriestracker.model.Package;
+import cmpt213.assignment3.packagedeliveriestracker.model.Perishable;
+import cmpt213.assignment3.packagedeliveriestracker.textui.PackageFactory;
 import com.github.lgooddatepicker.components.DatePicker;
 import com.github.lgooddatepicker.components.DatePickerSettings;
+import com.github.lgooddatepicker.components.DateTimePicker;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 
 public class PackageUI {
     String title;
@@ -217,9 +224,7 @@ public class PackageUI {
 
         JPanel deliveryDatePanel = new JPanel();
         JLabel deliveryDateLabel = new JLabel("Estimated Delivery Date: ");
-
-        DatePicker deliveryDatePicker = new DatePicker();
-        deliveryDatePicker.setPreferredSize(new Dimension(100,20));
+        DateTimePicker deliveryDatePicker = new DateTimePicker();
         deliveryDatePanel.add(deliveryDateLabel);
         deliveryDatePanel.add(deliveryDatePicker);
         formPanel.add(deliveryDatePanel);
@@ -228,35 +233,132 @@ public class PackageUI {
         JLabel specificLabel = new JLabel();
         JTextField specificInputField = new JTextField();
         specificInputField.setPreferredSize(new Dimension(100,20));
-        specificPanel.add(specificLabel);
+        DateTimePicker expiryDate = new DateTimePicker();
         packageTypeOptions.addActionListener(e -> {
+        specificPanel.removeAll();
             if(packageTypeOptions.getSelectedItem().equals("book")) {
                 specificLabel.setText("Author: ");
+                specificPanel.add(specificLabel);
                 specificPanel.add(specificInputField);
             }
             else if(packageTypeOptions.getSelectedItem().equals("electronic")) {
                 specificLabel.setText("EHF: ");
+                specificPanel.add(specificLabel);
                 specificPanel.add(specificInputField);
             }
             else if(packageTypeOptions.getSelectedItem().equals("perishable")) {
                 specificLabel.setText("Expiry Date: ");
-                specificPanel.add(specificInputField);
-            }
-            else {
-                //Remove text field if it exists
-                if(specificPanel.getComponentCount() == 2) {
-                    specificPanel.remove(1);
-                }
-                specificLabel.setText("*** Please select a package type ***");
+                specificPanel.add(specificLabel);
+                specificPanel.add(expiryDate);
             }
             formPanel.add(specificPanel);
+            formPanel.updateUI();
         });
 
-        formPanel.setBorder(BorderFactory.createEmptyBorder(20,0,150,0));
-
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20,0,80,0));
         JPanel buttonPanel = new JPanel();
         JButton createPackageButton = new JButton("Create");
+        createPackageButton.addActionListener(e -> {
+            Boolean success = true;
+            if(packageTypeOptions.getSelectedItem().equals("--")) {
+                success = false;
+                typeLabel.setText("Type: ***Please select a package type***");
+            }
+            else {
+                typeLabel.setText("Type: ");
+            }
+
+            if(nameInputField.getText().isBlank()) {
+                success = false;
+                nameLabel.setText("Name: ***Please enter a name***");
+            }
+            else {
+                nameLabel.setText("Name: ");
+            }
+
+            try {
+                priceLabel.setText("Price: ");
+                Double.parseDouble(priceInputField.getText());
+            } catch (Exception error) {
+                success = false;
+                priceLabel.setText("Price: ***Invalid price***");
+            }
+
+            try {
+                weightLabel.setText("Weight: ");
+                Double.parseDouble(weightInputField.getText());
+            } catch (Exception error) {
+                success = false;
+                weightLabel.setText("Weight: ***Invalid weight***");
+            }
+
+            if(deliveryDatePicker.getDatePicker().toString().isBlank()) {
+                success = false;
+                deliveryDateLabel.setText("Estimated Delivery Date: ***Invalid Date***");
+            } else if(deliveryDatePicker.getTimePicker().toString().isBlank()) {
+                success = false;
+                deliveryDateLabel.setText("Estimated Delivery Date: ***Invalid Time***");
+            }
+            else {
+                deliveryDateLabel.setText("Estimated Delivery Date: ");
+            }
+
+            if(packageTypeOptions.getSelectedItem().equals("book")) {
+                if(specificInputField.getText().isBlank()){
+                    success = false;
+                    specificLabel.setText("Author: ***Invalid author***");
+                }
+                else {
+                    specificLabel.setText("Author: ");
+                }
+            } else if(packageTypeOptions.getSelectedItem().equals("electronic")) {
+                try {
+                    specificLabel.setText("EHF: ");
+                    Double.parseDouble(specificInputField.getText());
+                } catch (Exception error) {
+                    success = false;
+                    specificLabel.setText("EHF: ***Invalid EHF***");
+                }
+            } else if(packageTypeOptions.getSelectedItem().equals("perishable")) {
+                if(expiryDate.getDatePicker().toString().isBlank()){
+                    success = false;
+                    specificLabel.setText("Expiry Date: ***Invalid expiry date***");
+                } else if(expiryDate.getTimePicker().toString().isBlank()) {
+                    success = false;
+                    specificLabel.setText("Expiry Date: ***Invalid expiry time***");
+                }
+                else {
+                    specificLabel.setText("Expiry Date: ");
+                }
+            }
+            if(success) {
+                Package newPackage;
+                String name = nameInputField.getText();
+                String notes = notesInputField.getText();
+                Double price = Double.parseDouble(priceInputField.getText());
+                Double weight = Double.parseDouble(weightInputField.getText());
+                Boolean delivered = false;
+                LocalDateTime deliveryDate = deliveryDatePicker.getDateTimePermissive();
+                if(packageTypeOptions.getSelectedItem().equals("book")) {
+                    String author = specificInputField.getText();
+                    newPackage = new Book(author, name, notes, price, weight, delivered, deliveryDate);
+                } else if(packageTypeOptions.getSelectedItem().equals("electronic")) {
+                    Double ehf = Double.parseDouble(specificInputField.getText());
+                    newPackage = new Electronic(ehf, name, notes, price, weight, delivered, deliveryDate);
+                } else {
+                    LocalDateTime expiry = expiryDate.getDateTimePermissive();
+                    newPackage = new Perishable(expiry, name, notes, price, weight, delivered, deliveryDate);
+                }
+                packageArray.add(newPackage);
+                addPackageFrame.dispose();
+            }
+        });
+
         JButton cancelPackageButton = new JButton("Cancel");
+        cancelPackageButton.addActionListener(e -> {
+            addPackageFrame.dispose();
+        });
+
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(0,0,50,0));
         buttonPanel.add(createPackageButton);
         buttonPanel.add(cancelPackageButton);
