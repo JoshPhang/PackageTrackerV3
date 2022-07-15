@@ -1,0 +1,45 @@
+Package Tracker User Manual
+
+Launching the program
+    You can launch the program through PackageDeliveriesTracker.java
+    From there you can choose any of the operations below to interact with the Package Tracker.
+
+Operation 1: List all packages
+    1. By clicking the 'All' button near the top, a list of all packages stored in list.json will appear.
+    2. If list.json does not exist, there will be no packages to show.
+    3. The list of packages will be shown with their Package #, Type, and all related attributes.
+
+Operation 2: Add a package
+    1. By clicking the 'Add Package' button near the bottom, a new window will show up.
+    2. You then select the type of the package, and enter all related information into the text fields.
+        *Everything must be filled in except for Notes, which is optional
+    3. When all information is filled in, click the 'Create' button to create a new package and add it to the program.
+    4. You can cancel at any time by clicking the 'Cancel' button. This will close the current window so that you can
+        interact with the main menu.
+
+Operation 3: Remove a package
+    1. You can remove a package from any of the 3 tabs in the main menu by clicking the 'Remove' button on the package
+        you wish to remove.
+    2. The package will be removed from the system and will be deleted from the list.json file when the program ends.
+
+Operation 4: List overdue packages
+    1. By clicking the 'Overdue' button near the top, a list of all overdue packages stored in list.json will appear.
+    2. If list.json does not exist, there will be no packages to show.
+    3. The list of overdue packages will be shown with their Package #, Type, and all related attributes.
+
+Operation 5: List upcoming packages
+    1. By clicking the 'Upcoming' button near the top, a list of all upcoming packages stored in list.json will appear.
+    2. If list.json does not exist, there will be no packages to show.
+    3. The list of upcoming packages will be shown with their Package #, Type, and all related attributes.
+
+Operation 6: Mark package as delivered
+    1. You can mark a package as delivered at any time by clicking the checkbox next to the remove button.
+    2. When a checkbox is checked, the corresponding package has been marked as delivered.
+    3. You can mark a package as undelivered by unchecking the checkbox.
+    4. By default, added packages will be marked as undelivered.
+    5. If a package is marked as delivered, the checkbox will be checked when the program loads.
+
+Operation 7: Exit
+    1. When you are done, you can close the main window by pressing the red 'X' at the top right corner.
+    2. The current list of packages will be stored into list.json for future use.
+    3. NOTE: When closing the 'Add Package' window, the program will not exit.
